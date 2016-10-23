@@ -1,0 +1,47 @@
+<div class="row card">
+	<div class="container" style="margin-top: 5px;">
+                <%@user = User.find(status.user_id)%>
+                <div class="col-sm-2 card">
+                         <div class="text-xs-center"><strong><%= @user.Username%></strong></div>
+                         <div class="text-xs-center"><img src="<%=@user.avatar%>" class="img-circle" width="50" height="50"></div>
+                </div>
+                <div class="col-sm-10">
+                        <p class="container modal-body "><%= status.content %></p>
+                        <p class="pull-xs-right" style="margin-right: 5px; margin-bottom: 5px;">
+                        <% if(status.user_id == session[:current_user_id]) %>
+                                <%= link_to 'Edit', edit_status_path(status), class: 'btn btn-primary', style: 'padding: 2px 10px;'%>
+                                <%= link_to 'Delete', status, method: :delete, data: { confirm: 'Do you want destroy?' }, class: 'btn btn-danger', style: 'padding: 2px 10px;'%>
+                        <%end %>
+                        </p>
+                </div>
+               
+                
+	</div>
+        <div class="container">
+                <h6 class="text-muted">Comments</h6>
+                <% status.comments.each do |comment|%>
+                    <div id="del" class="alert alert-success" role="alert" style="padding-top: 10px; padding-bottom: 10px;">
+                    <% @temp = User.find(comment.user_id)%>
+                    <a href="#" class="del_comment">Demo</a>
+                      <strong><%= @temp.Username %>: </strong> 
+                      <%= comment.body %>
+                      <div class="text-xs-right">
+                      <% if(comment.user_id==session[:current_user_id] or status.user_id==session[:current_user_id])%>
+                          <%= link_to 'Delete',[comment.status, comment], method: :delete, data: { confirm: 'Do you want delete?' },class: 'del_comment', style: 'padding: 2px 10px;'%>
+                      <% elsif(comment.status_id==session[:current_user_id]) %>
+                          <%= link_to 'Delete',[comment.status, comment], method: :delete, data: { confirm: 'Do you want destroy?' },class: 'btn btn-danger del_comment', style: 'padding: 2px 10px;'%>
+                        <% end %>
+        </div>
+                    </div>
+                <% end %>
+
+                <%= form_for([status, @status.comments.build]) do |f| %>
+                  <p style="margin-bottom: 5px;">
+                    <%= f.text_area :body, size:"50x1" %>
+                  </p>
+                  <p>
+                  <%= f.submit 'Comment', :class => 'btn btn-primary', :style => 'padding: 2px 10px; margin-left: 390px;"' %>
+                  </p>
+                <% end %>
+        </div>
+</div>
